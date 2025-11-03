@@ -22,6 +22,9 @@ from .serializers import (
     WebhookPayloadSerializer, SubscriptionUsageSerializer,
     PerformanceSummarySerializer, ManagedBotRankingSerializer
 )
+from .serializers_additional import (
+    UserSubscriptionCreateSerializer, UserSubscriptionUpdateSerializer
+)
 from ..utils import (
     validate_webhook_request, log_webhook_request,
     validate_webhook_payload, check_subscription_limits,
