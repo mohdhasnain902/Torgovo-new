@@ -1,0 +1,120 @@
+version: '3.8'
+
+services:
+  # PostgreSQL Database (Development)
+  db:
+    image: postgres:15-alpine
+    container_name: crypto_trading_db_dev
+    environment:
+      POSTGRES_DB: crypto_trading_dev
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: devpassword
+    volumes:
+      - postgres_dev_data:/var/lib/postgresql/data
+    ports:
+      - "5433:5432"
+    networks:
+      - crypto_trading_dev_network
+
+  # Redis Cache (Development)
+  redis:
+    image: redis:7-alpine
+    container_name: crypto_trading_redis_dev
+    command: redis-server --appendonly yes
+    volumes:
+      - redis_dev_data:/data
+    ports:
+      - "6380:6379"
+    networks:
+      - crypto_trading_dev_network
+
+  # Django Web Application (Development)
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    container_name: crypto_trading_web_dev
+    command: python manage.py runserver 0.0.0.0:8000
+    environment:
+      - DJANGO_SETTINGS_MODULE=crypto_trading_platform.settings.development
+      - DB_HOST=db
+      - DB_PORT=5432
+      - DB_NAME=crypto_trading_dev
+      - DB_USER=postgres
+      - DB_PASSWORD=devpassword
+      - CELERY_BROKER_URL=redis://redis:6379/0
+      - CELERY_RESULT_BACKEND=redis://redis:6379/0
+      - REDIS_URL=redis://redis:6379/1
+      - DEBUG=True
+    volumes:
+      - .:/app
+      - static_dev_volume:/app/staticfiles
+      - media_dev_volume:/app/media
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+      - redis
+    networks:
+      - crypto_trading_dev_network
+
+  # Celery Worker (Development)
+  celery:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    container_name: crypto_trading_celery_dev
+    command: celery -A crypto_trading_platform worker -l info
+    environment:
+      - DJANGO_SETTINGS_MODULE=crypto_trading_platform.settings.development
+      - DB_HOST=db
+      - DB_PORT=5432
+      - DB_NAME=crypto_trading_dev
+      - DB_USER=postgres
+      - DB_PASSWORD=devpassword
+      - CELERY_BROKER_URL=redis://redis:6379/0
+      - CELERY_RESULT_BACKEND=redis://redis:6379/0
+      - REDIS_URL=redis://redis:6379/1
+    volumes:
+      - .:/app
+      - logs_dev_volume:/app/logs
+    depends_on:
+      - db
+      - redis
+    networks:
+      - crypto_trading_dev_network
+
+  # Flower (Celery Monitoring - Development)
+  flower:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    container_name: crypto_trading_flower_dev
+    command: celery -A crypto_trading_platform flower --port=5555
+    environment:
+      - DJANGO_SETTINGS_MODULE=crypto_trading_platform.settings.development
+      - DB_HOST=db
+      - DB_PORT=5432
+      - DB_NAME=crypto_trading_dev
+      - DB_USER=postgres
+      - DB_PASSWORD=devpassword
+      - CELERY_BROKER_URL=redis://redis:6379/0
+      - CELERY_RESULT_BACKEND=redis://redis:6379/0
+    ports:
+      - "5556:5555"
+    depends_on:
+      - redis
+      - celery
+    networks:
+      - crypto_trading_dev_network
+
+volumes:
+  postgres_dev_data:
+  redis_dev_data:
+  static_dev_volume:
+  media_dev_volume:
+  logs_dev_volume:
+
+networks:
+  crypto_trading_dev_network:
+    driver: bridge
