@@ -2,7 +2,7 @@
 URL configuration for managed bot endpoints.
 """
 from django.urls import path
-from . import views
+from subscriptions.api import views as api_views
 
 app_name = 'managed_bot'
 
