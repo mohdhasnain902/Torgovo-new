@@ -16,7 +16,7 @@ urlpatterns = [
     path('bots/manage/', views.TradingBotView.as_view(), name='trading_bot_manage'),
     path('bots/arbitrage/', views.ArbitrageBotView.as_view(), name='arbitrage_bot_manage'),
     path('statistics/', views.trading_statistics, name='trading_statistics'),
-    path('sessions/<uuid:session_id>/', views.bot_session_detail, name='bot_session_detail'),
+    path('sessions/<str:session_id>/', views.bot_session_detail, name='bot_session_detail'),
 
     # TradingView webhook endpoint
     path('webhook/', views.trading_webhook, name='trading_webhook'),
