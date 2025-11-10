@@ -11,6 +11,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent.parent
 # Load environment variables
 load_dotenv()
 
+# Custom settings
+FIELD_ENCRYPTION_KEY = os.getenv('FIELD_ENCRYPTION_KEY', 'django-insecure-field-key')
+
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
