@@ -21,7 +21,7 @@ def health_check(request):
 def api_info(request):
     """API information endpoint."""
     return JsonResponse({
-        'name': 'Crypto Trading Platform API',
+        'name': 'Torgovo_new API',
         'version': '1.0.0',
         'endpoints': {
             'subscription-plans': '/api/subscription-plans/',
