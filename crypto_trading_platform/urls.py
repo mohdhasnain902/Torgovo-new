@@ -1,5 +1,5 @@
 """
-URL configuration for crypto trading platform.
+URL configuration for Torgovo_new - Crypto Trading Bot Platform.
 """
 from django.contrib import admin
 from django.urls import path, include
