@@ -28,6 +28,7 @@ def api_info(request):
             'subscriptions': '/api/subscriptions/',
             'custom-bot-webhook': '/api/custom-bot/webhook/',
             'managed-bot': '/api/managed-bot/',
+            'trading': '/api/trading/',
         },
         'authentication': 'Token-based',
         'documentation': '/api/docs/'
