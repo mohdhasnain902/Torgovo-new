@@ -1,5 +1,5 @@
 """
-Django base settings for crypto trading platform.
+Django base settings for Torgovo_new.
 """
 import os
 from pathlib import Path
