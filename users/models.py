@@ -1,5 +1,5 @@
 """
-User models for crypto trading platform.
+User models for Torgovo_new - Crypto Trading Bot Platform.
 """
 import os
 import secrets
