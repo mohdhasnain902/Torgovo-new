@@ -54,16 +54,16 @@ class TradingManager:
             profile = user.trading_profile  # Use the correct related_name from UserProfile
             credentials = {
                 'binance': {
-                    'api_key': profile.api_key,  # Use the generic API keys
-                    'api_secret': profile.api_secret,
+                    'api_key': profile.binance_api_key or profile.api_key,  # Fallback to generic API key
+                    'api_secret': profile.binance_api_secret or profile.api_secret,
                 },
                 'bybit': {
-                    'api_key': profile.api_key,
-                    'api_secret': profile.api_secret,
+                    'api_key': profile.bybit_api_key or profile.api_key,
+                    'api_secret': profile.bybit_api_secret or profile.api_secret,
                 },
                 'mexc': {
-                    'api_key': profile.api_key,
-                    'api_secret': profile.api_secret,
+                    'api_key': profile.mexc_api_key or profile.api_key,
+                    'api_secret': profile.mexc_api_secret or profile.api_secret,
                 }
             }
             return credentials
