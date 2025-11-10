@@ -97,31 +97,52 @@ class TradingManager:
             # Get user credentials
             credentials = self._get_user_exchange_credentials(user)
 
-            # Create bot instance based on exchange
+            # Create bot instance based on exchange using the user's provided code structure
             try:
                 if exchange == "binance":
+                    if exchange not in credentials or not credentials[exchange]['api_key']:
+                        raise ValueError(f"Binance API keys not configured for user {user.username}")
+
+                    # Initialize Binance connection using the provided TradingManager approach
                     bot = BinanceBots(
                         user=user,
                         pair_config=pair_config,
-                        credentials=credentials
+                        api_key=credentials[exchange]['api_key'],
+                        api_secret=credentials[exchange]['api_secret'],
+                        testnet=False  # Default to mainnet, can be made configurable
                     )
+
                 elif exchange == "bybit":
+                    if exchange not in credentials or not credentials[exchange]['api_key']:
+                        raise ValueError(f"Bybit API keys not configured for user {user.username}")
+
                     bot = BybitBots(
                         user=user,
                         pair_config=pair_config,
-                        credentials=credentials
+                        api_key=credentials[exchange]['api_key'],
+                        api_secret=credentials[exchange]['api_secret']
                     )
+
                 elif exchange == "mexc":
+                    if exchange not in credentials or not credentials[exchange]['api_key']:
+                        raise ValueError(f"MEXC API keys not configured for user {user.username}")
+
                     bot = MexcBots(
                         user=user,
                         pair_config=pair_config,
-                        credentials=credentials
+                        api_key=credentials[exchange]['api_key'],
+                        api_secret=credentials[exchange]['api_secret']
                     )
+
                 elif exchange == "kraken_spot":
+                    if exchange not in credentials or not credentials[exchange]['api_key']:
+                        raise ValueError(f"Kraken API keys not configured for user {user.username}")
+
                     bot = KrakenBots(
                         user=user,
                         pair_config=pair_config,
-                        credentials=credentials
+                        api_key=credentials[exchange]['api_key'],
+                        api_secret=credentials[exchange]['api_secret']
                     )
                 else:
                     raise ValueError(f"Unsupported exchange: {exchange}")
