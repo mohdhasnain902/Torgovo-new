@@ -1,112 +1,103 @@
-version: '3.8'
-
 services:
   # PostgreSQL Database (Development)
   db:
     image: postgres:15-alpine
-    container_name: crypto_trading_db_dev
+    container_name: torgovo_db_dev
     environment:
-      POSTGRES_DB: crypto_trading_dev
+      POSTGRES_DB: torgovo_new_dev
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: devpassword
     volumes:
       - postgres_dev_data:/var/lib/postgresql/data
     ports:
       - "5433:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
     networks:
-      - crypto_trading_dev_network
+      - torgovo_dev_network
 
   # Redis Cache (Development)
   redis:
     image: redis:7-alpine
-    container_name: crypto_trading_redis_dev
+    container_name: torgovo_redis_dev
     command: redis-server --appendonly yes
     volumes:
       - redis_dev_data:/data
     ports:
       - "6380:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
     networks:
-      - crypto_trading_dev_network
+      - torgovo_dev_network
 
   # Django Web Application (Development)
   web:
     build:
       context: .
       dockerfile: Dockerfile.dev
-    container_name: crypto_trading_web_dev
+    container_name: torgovo_web_dev
     command: python manage.py runserver 0.0.0.0:8000
     environment:
       - DJANGO_SETTINGS_MODULE=crypto_trading_platform.settings.development
       - DB_HOST=db
       - DB_PORT=5432
-      - DB_NAME=crypto_trading_dev
+      - DB_NAME=torgovo_new_dev
       - DB_USER=postgres
       - DB_PASSWORD=devpassword
       - CELERY_BROKER_URL=redis://redis:6379/0
       - CELERY_RESULT_BACKEND=redis://redis:6379/0
       - REDIS_URL=redis://redis:6379/1
       - DEBUG=True
+      - SECRET_KEY=django-insecure-dev-key
+      - ALLOWED_HOSTS=localhost,127.0.0.1,0.0.0.0
     volumes:
       - .:/app
       - static_dev_volume:/app/staticfiles
       - media_dev_volume:/app/media
+      - logs_dev_volume:/app/logs
     ports:
       - "8000:8000"
     depends_on:
-      - db
-      - redis
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
     networks:
-      - crypto_trading_dev_network
+      - torgovo_dev_network
 
   # Celery Worker (Development)
   celery:
     build:
       context: .
       dockerfile: Dockerfile.dev
-    container_name: crypto_trading_celery_dev
+    container_name: torgovo_celery_dev
     command: celery -A crypto_trading_platform worker -l info
     environment:
       - DJANGO_SETTINGS_MODULE=crypto_trading_platform.settings.development
       - DB_HOST=db
       - DB_PORT=5432
-      - DB_NAME=crypto_trading_dev
+      - DB_NAME=torgovo_new_dev
       - DB_USER=postgres
       - DB_PASSWORD=devpassword
       - CELERY_BROKER_URL=redis://redis:6379/0
       - CELERY_RESULT_BACKEND=redis://redis:6379/0
       - REDIS_URL=redis://redis:6379/1
+      - SECRET_KEY=django-insecure-dev-key
     volumes:
       - .:/app
       - logs_dev_volume:/app/logs
     depends_on:
       - db
       - redis
+      - web
     networks:
-      - crypto_trading_dev_network
-
-  # Flower (Celery Monitoring - Development)
-  flower:
-    build:
-      context: .
-      dockerfile: Dockerfile.dev
-    container_name: crypto_trading_flower_dev
-    command: celery -A crypto_trading_platform flower --port=5555
-    environment:
-      - DJANGO_SETTINGS_MODULE=crypto_trading_platform.settings.development
-      - DB_HOST=db
-      - DB_PORT=5432
-      - DB_NAME=crypto_trading_dev
-      - DB_USER=postgres
-      - DB_PASSWORD=devpassword
-      - CELERY_BROKER_URL=redis://redis:6379/0
-      - CELERY_RESULT_BACKEND=redis://redis:6379/0
-    ports:
-      - "5556:5555"
-    depends_on:
-      - redis
-      - celery
-    networks:
-      - crypto_trading_dev_network
+      - torgovo_dev_network
 
 volumes:
   postgres_dev_data:
@@ -116,5 +107,5 @@ volumes:
   logs_dev_volume:
 
 networks:
-  crypto_trading_dev_network:
+  torgovo_dev_network:
     driver: bridge
