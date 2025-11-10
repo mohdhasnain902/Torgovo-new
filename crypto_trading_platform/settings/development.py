@@ -1,5 +1,5 @@
 """
-Development settings for crypto trading platform.
+Development settings for Torgovo_new.
 """
 from .base import *
 
