@@ -2,7 +2,7 @@
 URL configuration for custom bot webhook endpoints.
 """
 from django.urls import path
-from . import views
+from subscriptions.api import views as api_views
 
 app_name = 'custom_bot_webhook'
 
