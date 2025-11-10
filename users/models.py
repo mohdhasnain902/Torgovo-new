@@ -100,6 +100,44 @@ class UserProfile(models.Model):
         help_text='Exchange API secret (encrypted)'
     )
 
+    # Multiple exchange API credentials
+    binance_api_key = EncryptedCharField(
+        max_length=255,
+        blank=True,
+        null=True,
+        verbose_name='Binance API Key'
+    )
+    binance_api_secret = EncryptedCharField(
+        max_length=255,
+        blank=True,
+        null=True,
+        verbose_name='Binance API Secret'
+    )
+    bybit_api_key = EncryptedCharField(
+        max_length=255,
+        blank=True,
+        null=True,
+        verbose_name='Bybit API Key'
+    )
+    bybit_api_secret = EncryptedCharField(
+        max_length=255,
+        blank=True,
+        null=True,
+        verbose_name='Bybit API Secret'
+    )
+    mexc_api_key = EncryptedCharField(
+        max_length=255,
+        blank=True,
+        null=True,
+        verbose_name='MEXC API Key'
+    )
+    mexc_api_secret = EncryptedCharField(
+        max_length=255,
+        blank=True,
+        null=True,
+        verbose_name='MEXC API Secret'
+    )
+
     # Trading preferences
     demo_mode = models.BooleanField(
         default=True,
