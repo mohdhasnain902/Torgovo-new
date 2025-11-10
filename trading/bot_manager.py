@@ -49,17 +49,24 @@ class TradingManager:
         return f"{user.id}_{exchange}_arbitrage"
 
     def _get_user_exchange_credentials(self, user) -> Dict[str, Any]:
-        """Get user's exchange API credentials."""
+        """Get user's exchange API credentials from UserProfile."""
         try:
-            profile = user.trading_profile
-            return {
-                'api_key': profile.api_key,
-                'api_secret': profile.api_secret,
-                'demo_mode': profile.demo_mode,
-                'leverage': profile.leverage,
-                'exchange': profile.exchange,
-                'exchange_config': profile.exchange_config
+            profile = user.userprofile  # Updated to use the correct related_name
+            credentials = {
+                'binance': {
+                    'api_key': profile.binance_api_key,
+                    'api_secret': profile.binance_api_secret,
+                },
+                'bybit': {
+                    'api_key': profile.bybit_api_key,
+                    'api_secret': profile.bybit_api_secret,
+                },
+                'mexc': {
+                    'api_key': profile.mexc_api_key,
+                    'api_secret': profile.mexc_api_secret,
+                }
             }
+            return credentials
         except Exception as e:
             self.logger.error(f"Error getting user credentials: {e}")
             raise ValueError("User exchange credentials not configured")
