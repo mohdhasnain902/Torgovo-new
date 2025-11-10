@@ -7,8 +7,8 @@ from subscriptions.api import views as api_views
 app_name = 'managed_bot'
 
 urlpatterns = [
-    path('available/', views.available_managed_bots, name='available'),
-    path('subscribe/', views.ManagedBotSubscribeView.as_view(), name='subscribe'),
-    path('performance/', views.managed_bot_performance, name='performance'),
-    path('rankings/', views.managed_bot_rankings, name='rankings'),
+    path('available/', api_views.available_managed_bots, name='available'),
+    path('subscribe/', api_views.ManagedBotSubscribeView.as_view(), name='subscribe'),
+    path('performance/', api_views.managed_bot_performance, name='performance'),
+    path('rankings/', api_views.managed_bot_rankings, name='rankings'),
 ]
