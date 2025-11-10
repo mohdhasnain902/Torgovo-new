@@ -13,7 +13,7 @@ def health_check(request):
     """Health check endpoint for load balancers and monitoring."""
     return JsonResponse({
         'status': 'healthy',
-        'service': 'crypto-trading-platform',
+        'service': 'Torgovo_new',
         'version': '1.0.0'
     })
 
