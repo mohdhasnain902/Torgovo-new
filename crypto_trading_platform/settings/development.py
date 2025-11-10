@@ -11,18 +11,18 @@ ALLOWED_HOSTS = ['localhost', '127.0.0.1', '0.0.0.0']
 # Email backend
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
-# Additional apps for development
-INSTALLED_APPS += [
-    'debug_toolbar',
-]
+# Additional apps for development (commented out to avoid missing dependencies)
+# INSTALLED_APPS += [
+#     'debug_toolbar',
+# ]
 
 # Debug toolbar middleware (add at the top)
-MIDDLEWARE = ['debug_toolbar.middleware.DebugToolbarMiddleware'] + MIDDLEWARE
+# MIDDLEWARE = ['debug_toolbar.middleware.DebugToolbarMiddleware'] + MIDDLEWARE
 
 # Debug toolbar settings
-INTERNAL_IPS = [
-    '127.0.0.1',
-]
+# INTERNAL_IPS = [
+#     '127.0.0.1',
+# ]
 
 # CORS settings for development
 CORS_ALLOW_ALL_ORIGINS = True
